@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeon December 9 Event Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --terracotta: #D4735E;
+            --gold: #D4A574;
+            --deep-blue: #2C4E6B;
+            --warm-cream: #F5F1E8;
+            --dark-text: #2D2D2D;
+            --green: #4CAF50;
+            --yellow: #FFC107;
+            --red: #F44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, #E8DCC8 100%);
+            color: var(--dark-text);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #3D5A7A 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .countdown-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .countdown-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .countdown-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--terracotta);
+        }
+
+        .card h2 {
+            color: var(--deep-blue);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        /* Ticket Tracker */
+        .ticket-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .ticket-count {
+            font-size: 4em;
+            font-weight: bold;
+            color: var(--deep-blue);
+            margin: 20px 0;
+        }
+
+        .ticket-count span {
+            color: var(--terracotta);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 40px;
+            background: #E0E0E0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .metric-box {
+            background: var(--warm-cream);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--terracotta);
+        }
+
+        /* Input Fields */
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--terracotta);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--warm-cream);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .checklist-item:hover {
+            background: #EBE3D5;
+            transform: translateX(5px);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: var(--terracotta);
+        }
+
+        .checklist-item.completed label {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1.05em;
+        }
+
+        /* Team Status */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            font-weight: 600;
+        }
+
+        .team-member.ready {
+            background: var(--green);
+            color: white;
+        }
+
+        .team-member.needs-checkin {
+            background: var(--yellow);
+            color: var(--dark-text);
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: var(--terracotta);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #C2634D;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--deep-blue);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #243D56;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Weekly Targets */
+        .weekly-targets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .week-box {
+            background: linear-gradient(135deg, var(--deep-blue), var(--terracotta));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .week-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .week-target {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Last Updated */
+        .last-updated {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .ticket-count {
+                font-size: 2.5em;
+            }
+
+            .countdown-value {
+                font-size: 1.5em;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            color: #155724;
+            border-left: 5px solid var(--green);
+        }
+
+        .alert-warning {
+            background: #FFF3CD;
+            color: #856404;
+            border-left: 5px solid var(--yellow);
+        }
+
+        .alert-danger {
+            background: #F8D7DA;
+            color: #721C24;
+            border-left: 5px solid var(--red);
+        }
+
+        .add-task-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-task-container input {
+            flex: 1;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🍽️ Galeon December 9 Event Command Center</h1>
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <div class="countdown-label">Current Date/Time</div>
+                    <div class="countdown-value" id="currentDateTime"></div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-label">⏰ Countdown to Sellout (Dec 2)</div>
+                    <div class="countdown-value" id="selloutCountdown"></div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-label">🎉 Countdown to Event (Dec 9)</div>
+                    <div class="countdown-value" id="eventCountdown"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Ticket Tracker -->
+        <div class="card">
+            <h2>🎫 Ticket Sales Tracker</h2>
+
+            <div class="ticket-display">
+                <div class="ticket-count">
+                    <span id="currentTickets">0</span> / 100
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+            </div>
+
+            <div id="statusAlert"></div>
+
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">Tickets Sold</div>
+                    <input type="number" id="ticketInput" min="0" max="100" value="0" placeholder="Enter tickets sold">
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Daily Velocity Needed</div>
+                    <div class="metric-value" id="dailyVelocity">0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Days Remaining</div>
+                    <div class="metric-value" id="daysRemaining">0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Progress</div>
+                    <div class="metric-value" id="progressPercent">0%</div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--deep-blue); margin-top: 30px; margin-bottom: 15px;">Weekly Targets</h3>
+            <div class="weekly-targets">
+                <div class="week-box">
+                    <div class="week-label">Week 1</div>
+                    <div class="week-target">15-25</div>
+                </div>
+                <div class="week-box">
+                    <div class="week-label">Week 2</div>
+                    <div class="week-target">40-50</div>
+                </div>
+                <div class="week-box">
+                    <div class="week-label">Week 3</div>
+                    <div class="week-target">100</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Metrics -->
+        <div class="card">
+            <h2>📊 Quick Metrics</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">Email Opens</div>
+                    <input type="number" id="emailOpens" min="0" value="0" placeholder="Enter opens">
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Instagram Engagement %</div>
+                    <input type="number" id="igEngagement" min="0" max="100" step="0.1" value="0" placeholder="Enter %">
+                </div>
+            </div>
+
+            <div class="metric-box" style="margin-top: 20px;">
+                <div class="metric-label">Top Performing Post This Week</div>
+                <input type="text" id="topPost" placeholder="Enter post description">
+            </div>
+
+            <div class="last-updated" id="metricsUpdated">Last updated: Never</div>
+        </div>
+
+        <!-- Daily Checklist -->
+        <div class="card">
+            <h2>✅ Daily Checklist</h2>
+
+            <ul class="checklist" id="checklist"></ul>
+
+            <div class="add-task-container">
+                <input type="text" id="newTaskInput" placeholder="Add new task...">
+                <button class="btn-primary btn-small" onclick="addTask()">Add Task</button>
+            </div>
+        </div>
+
+        <!-- Team Status -->
+        <div class="card">
+            <h2>👥 Team Status</h2>
+
+            <div class="team-grid">
+                <div class="team-member needs-checkin" data-member="Chef Dio" onclick="toggleTeamStatus(this)">
+                    <div>👨‍🍳 Chef Dio</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">Needs Check-in</div>
+                </div>
+                <div class="team-member needs-checkin" data-member="Chef Justin" onclick="toggleTeamStatus(this)">
+                    <div>👨‍🍳 Chef Justin</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">Needs Check-in</div>
+                </div>
+                <div class="team-member needs-checkin" data-member="JJ" onclick="toggleTeamStatus(this)">
+                    <div>👤 JJ</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">Needs Check-in</div>
+                </div>
+                <div class="team-member needs-checkin" data-member="Ayce" onclick="toggleTeamStatus(this)">
+                    <div>👤 Ayce</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">Needs Check-in</div>
+                </div>
+                <div class="team-member needs-checkin" data-member="Ava" onclick="toggleTeamStatus(this)">
+                    <div>👤 Ava</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">Needs Check-in</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="card">
+            <h2>💾 Data Management</h2>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="exportData()">📥 Export Data</button>
+                <button class="btn-secondary" onclick="document.getElementById('importFile').click()">📤 Import Data</button>
+                <button class="btn-secondary" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+
+            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+        </div>
+    </div>
+
+    <script>
+        // Default checklist items
+        const defaultTasks = [
+            "Post Instagram story teasing menu items",
+            "Send follow-up emails to interested guests",
+            "Check in with Chef Dio on menu prep",
+            "Update ticket count on all platforms",
+            "Review and respond to DMs/comments",
+            "Coordinate with Chef Justin on timeline",
+            "Post customer testimonials/reviews",
+            "Share behind-the-scenes content",
+            "Update event page with latest info",
+            "Team sync meeting"
+        ];
+
+        // Initialize
+        function init() {
+            loadData();
+            updateCountdowns();
+            updateTicketMetrics();
+
+            // Update countdowns every second
+            setInterval(updateCountdowns, 1000);
+
+            // Add event listeners
+            document.getElementById('ticketInput').addEventListener('input', function() {
+                const tickets = parseInt(this.value) || 0;
+                saveData('tickets', tickets);
+                updateTicketMetrics();
+            });
+
+            document.getElementById('emailOpens').addEventListener('input', function() {
+                saveData('emailOpens', this.value);
+                updateMetricsTimestamp();
+            });
+
+            document.getElementById('igEngagement').addEventListener('input', function() {
+                saveData('igEngagement', this.value);
+                updateMetricsTimestamp();
+            });
+
+            document.getElementById('topPost').addEventListener('input', function() {
+                saveData('topPost', this.value);
+                updateMetricsTimestamp();
+            });
+        }
+
+        // Countdown timers
+        function updateCountdowns() {
+            const now = new Date();
+
+            // Current date/time
+            const options = {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent =
+                now.toLocaleDateString('en-US', options);
+
+            // Sellout deadline: Dec 2, 2025
+            const selloutDate = new Date('2025-12-02T23:59:59');
+            const selloutDiff = selloutDate - now;
+            document.getElementById('selloutCountdown').textContent =
+                formatCountdown(selloutDiff);
+
+            // Event day: Dec 9, 2025
+            const eventDate = new Date('2025-12-09T18:00:00');
+            const eventDiff = eventDate - now;
+            document.getElementById('eventCountdown').textContent =
+                formatCountdown(eventDiff);
+
+            // Update days remaining
+            const daysToSellout = Math.ceil(selloutDiff / (1000 * 60 * 60 * 24));
+            document.getElementById('daysRemaining').textContent =
+                daysToSellout > 0 ? daysToSellout : 0;
+        }
+
+        function formatCountdown(milliseconds) {
+            if (milliseconds < 0) return "PAST DUE";
+
+            const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+
+            if (days > 0) {
+                return `${days}d ${hours}h ${minutes}m`;
+            } else if (hours > 0) {
+                return `${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                return `${minutes}m ${seconds}s`;
+            }
+        }
+
+        // Ticket metrics
+        function updateTicketMetrics() {
+            const tickets = parseInt(document.getElementById('ticketInput').value) || 0;
+            const target = 100;
+            const percentage = Math.round((tickets / target) * 100);
+
+            // Update display
+            document.getElementById('currentTickets').textContent = tickets;
+            document.getElementById('progressPercent').textContent = percentage + '%';
+
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+
+            // Color coding
+            const daysRemaining = parseInt(document.getElementById('daysRemaining').textContent);
+            const neededPerDay = daysRemaining > 0 ? (target - tickets) / daysRemaining : 0;
+
+            document.getElementById('dailyVelocity').textContent =
+                neededPerDay > 0 ? neededPerDay.toFixed(1) + ' per day' : 'TARGET MET!';
+
+            // Status alert
+            const statusAlert = document.getElementById('statusAlert');
+            let alertClass = '';
+            let alertMessage = '';
+
+            if (percentage >= 100) {
+                alertClass = 'alert-success';
+                alertMessage = '🎉 SOLD OUT! Congratulations!';
+                progressBar.style.background = 'linear-gradient(90deg, var(--green), #66BB6A)';
+            } else if (percentage >= 75) {
+                alertClass = 'alert-success';
+                alertMessage = '✨ Excellent progress! On track to sell out!';
+                progressBar.style.background = 'linear-gradient(90deg, var(--green), #66BB6A)';
+            } else if (percentage >= 50) {
+                alertClass = 'alert-warning';
+                alertMessage = '⚠️ Good progress, but keep pushing!';
+                progressBar.style.background = 'linear-gradient(90deg, var(--yellow), #FFD54F)';
+            } else if (percentage >= 25) {
+                alertClass = 'alert-warning';
+                alertMessage = '⚠️ Behind target - action needed to hit goal!';
+                progressBar.style.background = 'linear-gradient(90deg, var(--yellow), #FFD54F)';
+            } else {
+                alertClass = 'alert-danger';
+                alertMessage = '🚨 URGENT: Significant action required!';
+                progressBar.style.background = 'linear-gradient(90deg, var(--red), #EF5350)';
+            }
+
+            statusAlert.className = 'alert ' + alertClass;
+            statusAlert.textContent = alertMessage;
+        }
+
+        // Checklist
+        function renderChecklist() {
+            const checklist = document.getElementById('checklist');
+            const tasks = getData('tasks') || defaultTasks.map(task => ({
+                text: task,
+                completed: false,
+                id: Date.now() + Math.random()
+            }));
+
+            checklist.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = 'checklist-item' + (task.completed ? ' completed' : '');
+                li.innerHTML = `
+                    <input type="checkbox" ${task.completed ? 'checked' : ''}
+                           onchange="toggleTask(${index})">
+                    <label>${task.text}</label>
+                    <button class="btn-secondary btn-small" onclick="deleteTask(${index})"
+                            style="margin-left: auto;">Delete</button>
+                `;
+                checklist.appendChild(li);
+            });
+
+            saveData('tasks', tasks);
+        }
+
+        function toggleTask(index) {
+            const tasks = getData('tasks');
+            tasks[index].completed = !tasks[index].completed;
+            saveData('tasks', tasks);
+            renderChecklist();
+        }
+
+        function addTask() {
+            const input = document.getElementById('newTaskInput');
+            const taskText = input.value.trim();
+
+            if (taskText) {
+                const tasks = getData('tasks') || [];
+                tasks.push({
+                    text: taskText,
+                    completed: false,
+                    id: Date.now()
+                });
+                saveData('tasks', tasks);
+                renderChecklist();
+                input.value = '';
+            }
+        }
+
+        function deleteTask(index) {
+            const tasks = getData('tasks');
+            tasks.splice(index, 1);
+            saveData('tasks', tasks);
+            renderChecklist();
+        }
+
+        // Team status
+        function toggleTeamStatus(element) {
+            if (element.classList.contains('ready')) {
+                element.classList.remove('ready');
+                element.classList.add('needs-checkin');
+                element.querySelector('div:last-child').textContent = 'Needs Check-in';
+            } else {
+                element.classList.remove('needs-checkin');
+                element.classList.add('ready');
+                element.querySelector('div:last-child').textContent = 'Ready ✓';
+            }
+
+            saveTeamStatus();
+        }
+
+        function saveTeamStatus() {
+            const teamMembers = document.querySelectorAll('.team-member');
+            const status = {};
+            teamMembers.forEach(member => {
+                const name = member.getAttribute('data-member');
+                status[name] = member.classList.contains('ready');
+            });
+            saveData('teamStatus', status);
+        }
+
+        function loadTeamStatus() {
+            const status = getData('teamStatus');
+            if (status) {
+                const teamMembers = document.querySelectorAll('.team-member');
+                teamMembers.forEach(member => {
+                    const name = member.getAttribute('data-member');
+                    if (status[name]) {
+                        member.classList.remove('needs-checkin');
+                        member.classList.add('ready');
+                        member.querySelector('div:last-child').textContent = 'Ready ✓';
+                    }
+                });
+            }
+        }
+
+        // Data persistence
+        function saveData(key, value) {
+            localStorage.setItem('galeon_' + key, JSON.stringify(value));
+        }
+
+        function getData(key) {
+            const data = localStorage.getItem('galeon_' + key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        function loadData() {
+            // Load tickets
+            const tickets = getData('tickets') || 0;
+            document.getElementById('ticketInput').value = tickets;
+
+            // Load metrics
+            document.getElementById('emailOpens').value = getData('emailOpens') || 0;
+            document.getElementById('igEngagement').value = getData('igEngagement') || 0;
+            document.getElementById('topPost').value = getData('topPost') || '';
+
+            // Load last updated
+            const lastUpdated = getData('metricsUpdated');
+            if (lastUpdated) {
+                document.getElementById('metricsUpdated').textContent =
+                    'Last updated: ' + new Date(lastUpdated).toLocaleString();
+            }
+
+            // Load checklist
+            renderChecklist();
+
+            // Load team status
+            loadTeamStatus();
+        }
+
+        function updateMetricsTimestamp() {
+            const timestamp = new Date().toISOString();
+            saveData('metricsUpdated', timestamp);
+            document.getElementById('metricsUpdated').textContent =
+                'Last updated: ' + new Date(timestamp).toLocaleString();
+        }
+
+        // Export/Import
+        function exportData() {
+            const data = {
+                tickets: getData('tickets'),
+                emailOpens: getData('emailOpens'),
+                igEngagement: getData('igEngagement'),
+                topPost: getData('topPost'),
+                tasks: getData('tasks'),
+                teamStatus: getData('teamStatus'),
+                metricsUpdated: getData('metricsUpdated'),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)],
+                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `galeon-dashboard-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('Data exported successfully!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    // Restore all data
+                    if (data.tickets !== undefined) saveData('tickets', data.tickets);
+                    if (data.emailOpens !== undefined) saveData('emailOpens', data.emailOpens);
+                    if (data.igEngagement !== undefined) saveData('igEngagement', data.igEngagement);
+                    if (data.topPost !== undefined) saveData('topPost', data.topPost);
+                    if (data.tasks !== undefined) saveData('tasks', data.tasks);
+                    if (data.teamStatus !== undefined) saveData('teamStatus', data.teamStatus);
+                    if (data.metricsUpdated !== undefined) saveData('metricsUpdated', data.metricsUpdated);
+
+                    // Reload everything
+                    loadData();
+                    updateTicketMetrics();
+
+                    alert('Data imported successfully!');
+                } catch (error) {
+                    alert('Error importing data: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Allow adding task with Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('newTaskInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
