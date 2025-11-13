@@ -540,6 +540,132 @@
             </div>
         </div>
 
+        <!-- Sponsor Pipeline -->
+        <div class="card">
+            <h2>🤝 Sponsor Pipeline</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">Total Pipeline Value</div>
+                    <div class="metric-value" id="totalPipeline">$0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Confirmed Revenue</div>
+                    <div class="metric-value" id="confirmedRevenue">$0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Pending Follow-ups</div>
+                    <div class="metric-value" id="pendingSponsors">0</div>
+                </div>
+            </div>
+
+            <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--deep-blue); color: white;">
+                        <th style="padding: 12px; text-align: left;">Sponsor</th>
+                        <th style="padding: 12px; text-align: left;">Tier</th>
+                        <th style="padding: 12px; text-align: left;">Status</th>
+                        <th style="padding: 12px; text-align: left;">Value</th>
+                        <th style="padding: 12px; text-align: center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="sponsorTable">
+                    <tr>
+                        <td colspan="5" style="padding: 20px; text-align: center; color: #666;">
+                            Click "Add Sponsor" to start tracking
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="button-group" style="margin-top: 15px;">
+                <button class="btn-primary btn-small" onclick="showAddSponsorForm()">+ Add Sponsor</button>
+            </div>
+
+            <div id="addSponsorForm" style="display: none; margin-top: 20px; padding: 20px; background: var(--warm-cream); border-radius: 10px;">
+                <h3 style="color: var(--deep-blue); margin-bottom: 15px;">Add New Sponsor</h3>
+                <div style="display: grid; gap: 15px;">
+                    <input type="text" id="sponsorName" placeholder="Sponsor Name (e.g., Mama Sita's)">
+                    <select id="sponsorTier" style="padding: 12px; border: 2px solid var(--gold); border-radius: 8px; font-size: 1.1em;">
+                        <option value="">Select Tier</option>
+                        <option value="Apolaki">Apolaki ($5,000)</option>
+                        <option value="Sirena">Sirena ($1,500)</option>
+                        <option value="Lawin">Lawin ($500)</option>
+                    </select>
+                    <select id="sponsorStatus" style="padding: 12px; border: 2px solid var(--gold); border-radius: 8px; font-size: 1.1em;">
+                        <option value="Pending">Pending</option>
+                        <option value="Email Sent">Email Sent</option>
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Verbal Yes">Verbal Yes</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Declined">Declined</option>
+                    </select>
+                    <input type="number" id="sponsorValue" placeholder="Dollar Value (e.g., 5000)">
+                    <div class="button-group">
+                        <button class="btn-primary btn-small" onclick="addSponsor()">Save Sponsor</button>
+                        <button class="btn-secondary btn-small" onclick="cancelAddSponsor()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="card">
+            <h2>💰 Financial Summary</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h3 style="color: var(--green); margin-bottom: 15px;">Revenue</h3>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Ticket Sales (100 × $125)</div>
+                        <div class="metric-value" id="ticketRevenue">$0</div>
+                    </div>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Beverage Pairings (est.)</div>
+                        <input type="number" id="pairingRevenue" value="0" placeholder="Enter pairing revenue">
+                    </div>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Confirmed Sponsors</div>
+                        <div class="metric-value" id="sponsorRevenue">$0</div>
+                    </div>
+                    <div class="metric-box" style="background: var(--green); color: white; border: none;">
+                        <div class="metric-label" style="color: white;">Total Revenue</div>
+                        <div class="metric-value" style="color: white; font-size: 2em;" id="totalRevenue">$0</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--terracotta); margin-bottom: 15px;">Target Breakdown</h3>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Ticket Target</div>
+                        <div class="metric-value">$12,500</div>
+                    </div>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Pairing Target</div>
+                        <div class="metric-value">$2,250</div>
+                    </div>
+                    <div class="metric-box" style="margin-bottom: 10px;">
+                        <div class="metric-label">Sponsor Target</div>
+                        <div class="metric-value">$7,000</div>
+                    </div>
+                    <div class="metric-box" style="background: var(--deep-blue); color: white; border: none;">
+                        <div class="metric-label" style="color: white;">Total Target</div>
+                        <div class="metric-value" style="color: white; font-size: 2em;">$21,750</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <strong>Revenue Progress:</strong>
+                    <strong id="revenuePercent">0%</strong>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="revenueProgressBar" style="background: var(--gold);">0%</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Data Management -->
         <div class="card">
             <h2>💾 Data Management</h2>
@@ -574,6 +700,8 @@
             loadData();
             updateCountdowns();
             updateTicketMetrics();
+            renderSponsors();
+            updateFinancials();
 
             // Update countdowns every second
             setInterval(updateCountdowns, 1000);
@@ -583,6 +711,7 @@
                 const tickets = parseInt(this.value) || 0;
                 saveData('tickets', tickets);
                 updateTicketMetrics();
+                updateFinancials();
             });
 
             document.getElementById('emailOpens').addEventListener('input', function() {
@@ -598,6 +727,11 @@
             document.getElementById('topPost').addEventListener('input', function() {
                 saveData('topPost', this.value);
                 updateMetricsTimestamp();
+            });
+
+            document.getElementById('pairingRevenue').addEventListener('input', function() {
+                saveData('pairingRevenue', this.value);
+                updateFinancials();
             });
         }
 
@@ -800,6 +934,173 @@
             }
         }
 
+        // Sponsor management
+        function showAddSponsorForm() {
+            document.getElementById('addSponsorForm').style.display = 'block';
+        }
+
+        function cancelAddSponsor() {
+            document.getElementById('addSponsorForm').style.display = 'none';
+            clearSponsorForm();
+        }
+
+        function clearSponsorForm() {
+            document.getElementById('sponsorName').value = '';
+            document.getElementById('sponsorTier').value = '';
+            document.getElementById('sponsorStatus').value = 'Pending';
+            document.getElementById('sponsorValue').value = '';
+        }
+
+        function addSponsor() {
+            const name = document.getElementById('sponsorName').value.trim();
+            const tier = document.getElementById('sponsorTier').value;
+            const status = document.getElementById('sponsorStatus').value;
+            const value = parseInt(document.getElementById('sponsorValue').value) || 0;
+
+            if (!name || !tier || value <= 0) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const sponsors = getData('sponsors') || [];
+            sponsors.push({
+                name,
+                tier,
+                status,
+                value,
+                id: Date.now()
+            });
+
+            saveData('sponsors', sponsors);
+            renderSponsors();
+            cancelAddSponsor();
+            updateFinancials();
+        }
+
+        function renderSponsors() {
+            const sponsors = getData('sponsors') || [];
+            const table = document.getElementById('sponsorTable');
+
+            if (sponsors.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="padding: 20px; text-align: center; color: #666;">
+                            Click "Add Sponsor" to start tracking
+                        </td>
+                    </tr>
+                `;
+                updateSponsorMetrics([], 0, 0);
+                return;
+            }
+
+            table.innerHTML = sponsors.map((sponsor, index) => {
+                const statusColor = sponsor.status === 'Confirmed' ? 'var(--green)' :
+                                   sponsor.status === 'Verbal Yes' ? 'var(--yellow)' :
+                                   sponsor.status === 'Declined' ? 'var(--red)' : '#666';
+
+                return `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">${sponsor.name}</td>
+                        <td style="padding: 12px;">${sponsor.tier}</td>
+                        <td style="padding: 12px;">
+                            <select onchange="updateSponsorStatus(${index}, this.value)"
+                                    style="padding: 5px; border: 2px solid ${statusColor}; border-radius: 5px; background: white;">
+                                <option value="Pending" ${sponsor.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Email Sent" ${sponsor.status === 'Email Sent' ? 'selected' : ''}>Email Sent</option>
+                                <option value="Follow-up" ${sponsor.status === 'Follow-up' ? 'selected' : ''}>Follow-up</option>
+                                <option value="Verbal Yes" ${sponsor.status === 'Verbal Yes' ? 'selected' : ''}>Verbal Yes</option>
+                                <option value="Confirmed" ${sponsor.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="Declined" ${sponsor.status === 'Declined' ? 'selected' : ''}>Declined</option>
+                            </select>
+                        </td>
+                        <td style="padding: 12px; font-weight: bold; color: var(--terracotta);">
+                            $${sponsor.value.toLocaleString()}
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <button class="btn-secondary btn-small" onclick="deleteSponsor(${index})"
+                                    style="padding: 5px 10px;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Calculate metrics
+            const totalPipeline = sponsors
+                .filter(s => s.status !== 'Declined')
+                .reduce((sum, s) => sum + s.value, 0);
+
+            const confirmedRevenue = sponsors
+                .filter(s => s.status === 'Confirmed')
+                .reduce((sum, s) => sum + s.value, 0);
+
+            const pendingCount = sponsors
+                .filter(s => s.status !== 'Confirmed' && s.status !== 'Declined')
+                .length;
+
+            updateSponsorMetrics(sponsors, totalPipeline, confirmedRevenue, pendingCount);
+            updateFinancials();
+        }
+
+        function updateSponsorMetrics(sponsors, totalPipeline, confirmedRevenue, pendingCount) {
+            document.getElementById('totalPipeline').textContent = '$' + totalPipeline.toLocaleString();
+            document.getElementById('confirmedRevenue').textContent = '$' + confirmedRevenue.toLocaleString();
+            document.getElementById('pendingSponsors').textContent = pendingCount || 0;
+        }
+
+        function updateSponsorStatus(index, newStatus) {
+            const sponsors = getData('sponsors');
+            sponsors[index].status = newStatus;
+            saveData('sponsors', sponsors);
+            renderSponsors();
+        }
+
+        function deleteSponsor(index) {
+            if (confirm('Are you sure you want to delete this sponsor?')) {
+                const sponsors = getData('sponsors');
+                sponsors.splice(index, 1);
+                saveData('sponsors', sponsors);
+                renderSponsors();
+            }
+        }
+
+        // Financial tracking
+        function updateFinancials() {
+            const tickets = parseInt(document.getElementById('ticketInput').value) || 0;
+            const ticketPrice = 125;
+            const ticketRevenue = tickets * ticketPrice;
+
+            const pairingRevenue = parseInt(document.getElementById('pairingRevenue').value) || 0;
+
+            const sponsors = getData('sponsors') || [];
+            const sponsorRevenue = sponsors
+                .filter(s => s.status === 'Confirmed')
+                .reduce((sum, s) => sum + s.value, 0);
+
+            const totalRevenue = ticketRevenue + pairingRevenue + sponsorRevenue;
+            const totalTarget = 21750; // $12,500 tickets + $2,250 pairings + $7,000 sponsors
+
+            // Update displays
+            document.getElementById('ticketRevenue').textContent = '$' + ticketRevenue.toLocaleString();
+            document.getElementById('sponsorRevenue').textContent = '$' + sponsorRevenue.toLocaleString();
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toLocaleString();
+
+            // Update progress bar
+            const revenuePercent = Math.round((totalRevenue / totalTarget) * 100);
+            document.getElementById('revenuePercent').textContent = revenuePercent + '%';
+            const revenueBar = document.getElementById('revenueProgressBar');
+            revenueBar.style.width = Math.min(revenuePercent, 100) + '%';
+            revenueBar.textContent = revenuePercent + '%';
+
+            // Color coding
+            if (revenuePercent >= 75) {
+                revenueBar.style.background = 'linear-gradient(90deg, var(--green), #66BB6A)';
+            } else if (revenuePercent >= 50) {
+                revenueBar.style.background = 'linear-gradient(90deg, var(--yellow), #FFD54F)';
+            } else {
+                revenueBar.style.background = 'linear-gradient(90deg, var(--terracotta), var(--gold))';
+            }
+        }
+
         // Data persistence
         function saveData(key, value) {
             localStorage.setItem('galeon_' + key, JSON.stringify(value));
@@ -819,6 +1120,9 @@
             document.getElementById('emailOpens').value = getData('emailOpens') || 0;
             document.getElementById('igEngagement').value = getData('igEngagement') || 0;
             document.getElementById('topPost').value = getData('topPost') || '';
+
+            // Load financial data
+            document.getElementById('pairingRevenue').value = getData('pairingRevenue') || 0;
 
             // Load last updated
             const lastUpdated = getData('metricsUpdated');
@@ -850,6 +1154,8 @@
                 topPost: getData('topPost'),
                 tasks: getData('tasks'),
                 teamStatus: getData('teamStatus'),
+                sponsors: getData('sponsors'),
+                pairingRevenue: getData('pairingRevenue'),
                 metricsUpdated: getData('metricsUpdated'),
                 exportDate: new Date().toISOString()
             };
@@ -884,11 +1190,15 @@
                     if (data.topPost !== undefined) saveData('topPost', data.topPost);
                     if (data.tasks !== undefined) saveData('tasks', data.tasks);
                     if (data.teamStatus !== undefined) saveData('teamStatus', data.teamStatus);
+                    if (data.sponsors !== undefined) saveData('sponsors', data.sponsors);
+                    if (data.pairingRevenue !== undefined) saveData('pairingRevenue', data.pairingRevenue);
                     if (data.metricsUpdated !== undefined) saveData('metricsUpdated', data.metricsUpdated);
 
                     // Reload everything
                     loadData();
                     updateTicketMetrics();
+                    renderSponsors();
+                    updateFinancials();
 
                     alert('Data imported successfully!');
                 } catch (error) {
