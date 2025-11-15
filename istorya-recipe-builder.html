@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Istorya Recipe Builder</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      max-width: 900px;
+      width: 100%;
+      padding: 24px;
+      margin: 24px;
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-radius: 18px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #f9fafb;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-indicator {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .step-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .step-pill.active {
+      border-color: #f97316;
+      background: rgba(248, 113, 22, 0.15);
+      color: #fed7aa;
+    }
+
+    .step-pill span.number {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      background: rgba(148, 163, 184, 0.2);
+    }
+
+    .step-pill.active span.number {
+      background: #f97316;
+      color: #0b1120;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .card-note {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .option-card {
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.9);
+      cursor: pointer;
+      transition: border 0.15s ease, background 0.15s ease, transform 0.08s ease;
+      font-size: 0.85rem;
+    }
+
+    .option-card:hover {
+      border-color: rgba(248, 113, 22, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .option-card.selected {
+      border-color: #f97316;
+      background: rgba(248, 113, 22, 0.1);
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .option-emoji {
+      font-size: 1.1rem;
+    }
+
+    .option-desc {
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .buttons-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+    }
+
+    button.primary {
+      background: linear-gradient(to right, #f97316, #fb923c);
+      color: #111827;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(248, 113, 22, 0.4);
+    }
+
+    button.primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(248, 113, 22, 0.5);
+    }
+
+    button.secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    button.secondary:hover:not(:disabled) {
+      background: rgba(30, 64, 175, 0.5);
+    }
+
+    button.small {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .pill.selected {
+      border-color: #f97316;
+      background: rgba(248, 113, 22, 0.1);
+    }
+
+    .pill span.emoji {
+      font-size: 0.9rem;
+    }
+
+    .recipe-card {
+      border-radius: 16px;
+      padding: 16px 18px;
+      background: radial-gradient(circle at top, #111827, #020617);
+      border: 1px solid rgba(248, 113, 22, 0.5);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .recipe-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248, 113, 22, 0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .recipe-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .recipe-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .recipe-sub {
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+    }
+
+    .recipe-section-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fed7aa;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .recipe-text {
+      font-size: 0.85rem;
+      color: #f9fafb;
+    }
+
+    .recipe-footer {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #fed7aa;
+    }
+
+    .tagline {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .copy-status {
+      font-size: 0.75rem;
+      color: #bbf7d0;
+      margin-top: 4px;
+      min-height: 1em;
+    }
+
+    @media (max-width: 640px) {
+      .app-container {
+        margin: 12px;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <h1>What Is Your Istorya?</h1>
+    <p class="subtitle">
+      Build your Istorya as a recipe. Constellation points become ingredients. Sawsawan is your agency.
+    </p>
+
+    <div class="step-indicator">
+      <div class="step-pill active" data-step-pill="1">
+        <span class="number">1</span> Constellation
+      </div>
+      <div class="step-pill" data-step-pill="2">
+        <span class="number">2</span> Ingredients
+      </div>
+      <div class="step-pill" data-step-pill="3">
+        <span class="number">3</span> Method and Sawsawan
+      </div>
+      <div class="step-pill" data-step-pill="4">
+        <span class="number">4</span> Recipe Card
+      </div>
+    </div>
+
+    <!-- STEP 1: CONSTELLATION -->
+    <div class="card" data-step="1">
+      <div class="card-header">
+        <div class="card-title">Step 1 – Pick your constellation points</div>
+        <div class="card-note">These are big patterns or moments that feel familiar.</div>
+      </div>
+      <p class="hint">
+        Click all that apply. You can pick more than one. There are no wrong answers.
+      </p>
+      <div class="options-grid" id="constellation-options"></div>
+      <div class="buttons-row">
+        <button class="secondary small" id="reset-all-1">Reset</button>
+        <button class="primary" id="next-1">
+          Next: See your ingredients
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: INGREDIENTS -->
+    <div class="card" data-step="2" style="display:none;">
+      <div class="card-header">
+        <div class="card-title">Step 2 – Choose your base ingredients</div>
+        <div class="card-note">Based on what you picked, here are your flavor anchors.</div>
+      </div>
+      <p class="hint">
+        Pick up to three ingredients that feel most true right now.
+      </p>
+      <div id="ingredient-pills" class="pill-row"></div>
+      <div class="buttons-row">
+        <button class="secondary" id="back-2">Back</button>
+        <button class="primary" id="next-2">
+          Next: Method and sawsawan
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: METHOD / VESSEL / SAWSAWAN -->
+    <div class="card" data-step="3" style="display:none;">
+      <div class="card-header">
+        <div class="card-title">Step 3 – How are you cooking with it?</div>
+        <div class="card-note">Choose your method, vessel, and sawsawan.</div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div class="card-title" style="font-size:0.95rem;">Method – How are you processing this now?</div>
+        <div class="options-grid" id="method-options"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div class="card-title" style="font-size:0.95rem;">Vessel – What context are you cooking in?</div>
+        <div class="options-grid" id="vessel-options"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="font-size:0.95rem;">Sawsawan – How are you choosing to adapt it?</div>
+        <p class="hint">
+          This is your agency layer. You did not choose every ingredient, but you can choose how to season your story.
+        </p>
+        <div class="options-grid" id="sawsawan-options"></div>
+      </div>
+
+      <div class="buttons-row">
+        <button class="secondary" id="back-3">Back</button>
+        <button class="primary" id="next-3">
+          See my Istorya recipe
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4: FINAL RECIPE CARD -->
+    <div class="card" data-step="4" style="display:none;">
+      <div class="card-header">
+        <div class="card-title">Step 4 – Your Istorya Recipe</div>
+        <div class="card-note">This is a snapshot, not a permanent label. Recipes evolve.</div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-card-inner" id="recipe-output">
+          <!-- Generated content goes here -->
+        </div>
+      </div>
+
+      <div class="buttons-row">
+        <button class="secondary small" id="copy-text">Copy recipe text</button>
+        <button class="secondary small" id="copy-json">Copy recipe JSON</button>
+        <span class="copy-status" id="copy-status"></span>
+      </div>
+
+      <p class="tagline">
+        Keep this as a reminder that your so-called wrong turns were ingredients. Your sawsawan is how you claim them.
+      </p>
+
+      <div class="buttons-row">
+        <button class="secondary" id="back-4">Back</button>
+        <button class="primary" id="restart">
+          Start a new recipe
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data for constellation points and their ingredient mapping
+    const CONSTELLATION_POINTS = [
+      {
+        id: "migration",
+        label: "Migration or displacement",
+        desc: "Moving, feeling in between places, never fully from here or there.",
+        ingredientId: "fish_sauce"
+      },
+      {
+        id: "language",
+        label: "Language lost or reclaimed",
+        desc: "Pushed parents to speak English, or learning Tagalog or a regional language later.",
+        ingredientId: "coconut"
+      },
+      {
+        id: "academic_pressure",
+        label: "Academic pressure or failure",
+        desc: "That test, grade, or class that changed everything, or feels like it did.",
+        ingredientId: "vinegar"
+      },
+      {
+        id: "birth_order",
+        label: "Eldest, middle, youngest, or only child labor",
+        desc: "Invisible work, expectations, or feeling stuck in a family role.",
+        ingredientId: "rice"
+      },
+      {
+        id: "mixed_identity",
+        label: "Mixed identity navigation",
+        desc: "Filipino and something else, or feeling like you are always in between.",
+        ingredientId: "calamansi"
+      },
+      {
+        id: "body_burnout",
+        label: "Body rebellion or burnout",
+        desc: "Hypertension, exhaustion, shutdown, or your body saying no.",
+        ingredientId: "sili"
+      },
+      {
+        id: "disconnection",
+        label: "Cultural disconnection",
+        desc: "Not feeling Filipino enough. Not feeling American enough. Unsure where you fit.",
+        ingredientId: "salt"
+      }
+    ];
+
+    const INGREDIENTS = {
+      rice: {
+        id: "rice",
+        emoji: "🌾",
+        name: "Rice",
+        meaning: "Responsibility, everyday labor, being the one who holds it down."
+      },
+      vinegar: {
+        id: "vinegar",
+        emoji: "🔥",
+        name: "Vinegar",
+        meaning: "Academic pressure and sharp turning points that cut through your plans."
+      },
+      fish_sauce: {
+        id: "fish_sauce",
+        emoji: "🌊",
+        name: "Fish Sauce",
+        meaning: "Migration, isolation, and the deep parts you do not always show."
+      },
+      coconut: {
+        id: "coconut",
+        emoji: "🥥",
+        name: "Coconut",
+        meaning: "Language, softness, and the inside outside feeling of culture."
+      },
+      calamansi: {
+        id: "calamansi",
+        emoji: "🍋",
+        name: "Calamansi",
+        meaning: "Mixed identity, brightness, and both or and moments."
+      },
+      sili: {
+        id: "sili",
+        emoji: "🌶️",
+        name: "Sili",
+        meaning: "Anger, protest, activation, and courage that brings the heat."
+      },
+      salt: {
+        id: "salt",
+        emoji: "🧂",
+        name: "Salt",
+        meaning: "Worth, boundaries, and the basics you deserve but often overlook."
+      }
+    };
+
+    const METHODS = [
+      {
+        id: "sliced",
+        emoji: "🔪",
+        label: "Sliced",
+        desc: "Clean breaks from expectations and patterns."
+      },
+      {
+        id: "simmered",
+        emoji: "🍲",
+        label: "Simmered",
+        desc: "Slow processing over time. Letting things cook."
+      },
+      {
+        id: "charred",
+        emoji: "🔥",
+        label: "Charred",
+        desc: "Burnout and heat, learning from being overcooked."
+      },
+      {
+        id: "raw",
+        emoji: "🌊",
+        label: "Raw",
+        desc: "You are in the middle of it. Not processed yet."
+      },
+      {
+        id: "stirred",
+        emoji: "🥄",
+        label: "Stirred",
+        desc: "Actively integrating, mixing, and trying new approaches."
+      }
+    ];
+
+    const VESSELS = [
+      {
+        id: "palayok",
+        emoji: "🏺",
+        label: "Palayok",
+        desc: "Traditional container. Family and culture as the main setting."
+      },
+      {
+        id: "kawali",
+        emoji: "🍳",
+        label: "Kawali",
+        desc: "High heat and fast changes. A lot happening at once."
+      },
+      {
+        id: "kaldero",
+        emoji: "🥘",
+        label: "Kaldero",
+        desc: "Slow simmer and long term process. Taking your time."
+      },
+      {
+        id: "platter",
+        emoji: "🍽️",
+        label: "Platter",
+        desc: "Already sharing your story in public or with community."
+      }
+    ];
+
+    const SAWSAWAN = [
+      {
+        id: "matubig",
+        emoji: "🌊",
+        label: "Matubig",
+        desc: "Flowing. Letting things move and adjusting as you go."
+      },
+      {
+        id: "durog",
+        emoji: "🔨",
+        label: "Durog",
+        desc: "Breaking patterns down to the essence so you can rebuild."
+      },
+      {
+        id: "pinreserba",
+        emoji: "🫙",
+        label: "Pinreserba",
+        desc: "Fermenting. Trusting time to do its work. No rush."
+      },
+      {
+        id: "sariwa",
+        emoji: "🌿",
+        label: "Sariwa",
+        desc: "Fresh. Working with what is here right now."
+      },
+      {
+        id: "mamantika",
+        emoji: "🔥",
+        label: "Mamantika",
+        desc: "Protective. Creating a layer of safety and boundary first."
+      },
+      {
+        id: "may_kapares",
+        emoji: "🤝",
+        label: "May Kapares",
+        desc: "Paired. Asking for specific support or community."
+      },
+      {
+        id: "pinaghalo",
+        emoji: "🌀",
+        label: "Pinaghalo",
+        desc: "Mixed. Combining methods and making your own way."
+      }
+    ];
+
+    // State
+    let currentStep = 1;
+    let selectedConstellationIds = new Set();
+    let selectedIngredientIds = new Set();
+    let selectedMethodId = null;
+    let selectedVesselId = null;
+    let selectedSawsawanId = null;
+
+    // Helpers
+    function setStep(step) {
+      currentStep = step;
+      document.querySelectorAll("[data-step]").forEach(card => {
+        const cardStep = Number(card.getAttribute("data-step"));
+        card.style.display = cardStep === step ? "block" : "none";
+      });
+      document.querySelectorAll("[data-step-pill]").forEach(pill => {
+        const pillStep = Number(pill.getAttribute("data-step-pill"));
+        pill.classList.toggle("active", pillStep === step);
+      });
+      if (step === 2) {
+        generateIngredientPills();
+      }
+      if (step === 4) {
+        renderRecipe();
+      }
+    }
+
+    function createOptionCard({ emoji, label, desc, id, group, selectable = true }) {
+      const div = document.createElement("div");
+      div.className = "option-card";
+      div.dataset.optionId = id;
+      div.dataset.group = group;
+
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "option-label";
+
+      const emojiSpan = document.createElement("span");
+      emojiSpan.className = "option-emoji";
+      emojiSpan.textContent = emoji;
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = label;
+
+      labelDiv.appendChild(emojiSpan);
+      labelDiv.appendChild(textSpan);
+
+      const descDiv = document.createElement("div");
+      descDiv.className = "option-desc";
+      descDiv.textContent = desc;
+
+      div.appendChild(labelDiv);
+      div.appendChild(descDiv);
+
+      if (selectable) {
+        div.addEventListener("click", () => handleOptionClick(div));
+      }
+
+      return div;
+    }
+
+    function handleOptionClick(card) {
+      const group = card.dataset.group;
+      const id = card.dataset.optionId;
+
+      if (group === "constellation") {
+        if (selectedConstellationIds.has(id)) {
+          selectedConstellationIds.delete(id);
+          card.classList.remove("selected");
+        } else {
+          selectedConstellationIds.add(id);
+          card.classList.add("selected");
+        }
+        return;
+      }
+
+      if (group === "method") {
+        selectedMethodId = id;
+        document.querySelectorAll('.option-card[data-group="method"]').forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        return;
+      }
+
+      if (group === "vessel") {
+        selectedVesselId = id;
+        document.querySelectorAll('.option-card[data-group="vessel"]').forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        return;
+      }
+
+      if (group === "sawsawan") {
+        selectedSawsawanId = id;
+        document.querySelectorAll('.option-card[data-group="sawsawan"]').forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        return;
+      }
+
+      if (group === "ingredient") {
+        const maxIngredients = 3;
+        const already = selectedIngredientIds.has(id);
+        if (already) {
+          selectedIngredientIds.delete(id);
+          card.classList.remove("selected");
+        } else {
+          if (selectedIngredientIds.size >= maxIngredients) {
+            card.style.transform = "translateY(-1px) scale(1.01)";
+            setTimeout(() => {
+              card.style.transform = "none";
+            }, 120);
+          } else {
+            selectedIngredientIds.add(id);
+            card.classList.add("selected");
+          }
+        }
+      }
+    }
+
+    function initConstellationStep() {
+      const container = document.getElementById("constellation-options");
+      container.innerHTML = "";
+      CONSTELLATION_POINTS.forEach(point => {
+        const option = createOptionCard({
+          emoji: "✦",
+          label: point.label,
+          desc: point.desc,
+          id: point.id,
+          group: "constellation"
+        });
+        container.appendChild(option);
+      });
+    }
+
+    function generateIngredientPills() {
+      const container = document.getElementById("ingredient-pills");
+      container.innerHTML = "";
+
+      const mappedIds = new Set();
+      selectedConstellationIds.forEach(cid => {
+        const point = CONSTELLATION_POINTS.find(p => p.id === cid);
+        if (point) mappedIds.add(point.ingredientId);
+      });
+
+      if (mappedIds.size === 0) {
+        const p = document.createElement("p");
+        p.className = "hint";
+        p.textContent = "You did not select any constellation points yet. Go back and choose at least one.";
+        container.appendChild(p);
+        return;
+      }
+
+      mappedIds.forEach(iid => {
+        const ing = INGREDIENTS[iid];
+        if (!ing) return;
+
+        const pill = document.createElement("div");
+        pill.className = "pill";
+        pill.dataset.optionId = iid;
+        pill.dataset.group = "ingredient";
+
+        const emojiSpan = document.createElement("span");
+        emojiSpan.className = "emoji";
+        emojiSpan.textContent = ing.emoji;
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = ing.name;
+
+        pill.appendChild(emojiSpan);
+        pill.appendChild(textSpan);
+
+        const descSpan = document.createElement("span");
+        descSpan.style.color = "#9ca3af";
+        descSpan.style.fontSize = "0.75rem";
+        descSpan.textContent = " " + ing.meaning;
+
+        pill.appendChild(descSpan);
+
+        pill.addEventListener("click", () => {
+          handleOptionClick(pill);
+          pill.classList.toggle("selected", selectedIngredientIds.has(iid));
+        });
+
+        container.appendChild(pill);
+      });
+    }
+
+    function initMethodVesselSawsawan() {
+      const methodContainer = document.getElementById("method-options");
+      METHODS.forEach(m => {
+        const c = createOptionCard({
+          emoji: m.emoji,
+          label: m.label,
+          desc: m.desc,
+          id: m.id,
+          group: "method"
+        });
+        methodContainer.appendChild(c);
+      });
+
+      const vesselContainer = document.getElementById("vessel-options");
+      VESSELS.forEach(v => {
+        const c = createOptionCard({
+          emoji: v.emoji,
+          label: v.label,
+          desc: v.desc,
+          id: v.id,
+          group: "vessel"
+        });
+        vesselContainer.appendChild(c);
+      });
+
+      const sawsawanContainer = document.getElementById("sawsawan-options");
+      SAWSAWAN.forEach(s => {
+        const c = createOptionCard({
+          emoji: s.emoji,
+          label: s.label,
+          desc: s.desc,
+          id: s.id,
+          group: "sawsawan"
+        });
+        sawsawanContainer.appendChild(c);
+      });
+    }
+
+    function renderRecipe() {
+      const container = document.getElementById("recipe-output");
+      container.innerHTML = "";
+
+      const data = buildRecipeData();
+      const { ingredients, method, vessel, sawsawan } = data;
+
+      const ingredientNames = ingredients.map(i => `${i.emoji} ${i.name}`);
+      const ingredientMeaning = ingredients.map(i => `• ${i.emoji} ${i.name}: ${i.meaning}`).join("\n");
+
+      const title = document.createElement("div");
+      title.className = "recipe-title";
+      title.textContent = ingredientNames.length
+        ? `Istorya Recipe With ${ingredientNames.join(", ")}`
+        : "Istorya Recipe";
+
+      const sub = document.createElement("div");
+      sub.className = "recipe-sub";
+      sub.textContent = "A working draft of your story in recipe form.";
+
+      const ingredientsTitle = document.createElement("div");
+      ingredientsTitle.className = "recipe-section-title";
+      ingredientsTitle.textContent = "Base ingredients";
+
+      const ingredientsText = document.createElement("pre");
+      ingredientsText.className = "recipe-text";
+      ingredientsText.style.whiteSpace = "pre-wrap";
+      ingredientsText.textContent = ingredientMeaning || "You can go back and choose at least one base ingredient.";
+
+      const methodTitle = document.createElement("div");
+      methodTitle.className = "recipe-section-title";
+      methodTitle.textContent = "Method and vessel";
+
+      const methodText = document.createElement("div");
+      methodText.className = "recipe-text";
+      methodText.textContent =
+        method && vessel
+          ? `You are cooking this as ${method.emoji} ${method.label} in a ${vessel.emoji} ${vessel.label} context.`
+          : "You can go back and pick one method and one vessel.";
+
+      const sawsawanTitle = document.createElement("div");
+      sawsawanTitle.className = "recipe-section-title";
+      sawsawanTitle.textContent = "Sawsawan (agency layer)";
+
+      const sawsawanText = document.createElement("div");
+      sawsawanText.className = "recipe-text";
+      sawsawanText.textContent = sawsawan
+        ? `${sawsawan.emoji} ${sawsawan.label}: ${sawsawan.desc}`
+        : "You can go back and choose one sawsawan that fits how you are adapting your story right now.";
+
+      const summaryTitle = document.createElement("div");
+      summaryTitle.className = "recipe-section-title";
+      summaryTitle.textContent = "Serving suggestion";
+
+      const summary = document.createElement("div");
+      summary.className = "recipe-text";
+      summary.textContent = data.summary;
+
+      const footer = document.createElement("div");
+      footer.className = "recipe-footer";
+      footer.textContent = "This is not your final dish. It is a snapshot. Recipes evolve as you do.";
+
+      container.appendChild(title);
+      container.appendChild(sub);
+      container.appendChild(ingredientsTitle);
+      container.appendChild(ingredientsText);
+      container.appendChild(methodTitle);
+      container.appendChild(methodText);
+      container.appendChild(sawsawanTitle);
+      container.appendChild(sawsawanText);
+      container.appendChild(summaryTitle);
+      container.appendChild(summary);
+      container.appendChild(footer);
+    }
+
+    function buildSummarySentence(ingredients, method, vessel, sawsawan) {
+      if (ingredients.length === 0 && !method && !vessel && !sawsawan) {
+        return "Once you add ingredients, a method, a vessel, and sawsawan, this will read like a short story of where you are in your Istorya.";
+      }
+
+      const ingPart = ingredients.length
+        ? "You are working with " + ingredients.map(i => i.name.toLowerCase()).join(", ") + "."
+        : "";
+
+      const methodPart =
+        method && vessel
+          ? ` Right now that feels like ${method.label.toLowerCase()} in a ${vessel.label.toLowerCase()} setting.`
+          : "";
+
+      const sawsawanPart = sawsawan
+        ? ` You are choosing ${sawsawan.label.toLowerCase()} as your sawsawan, which means ${sawsawan.desc.toLowerCase()}.`
+        : "";
+
+      return (ingPart + methodPart + sawsawanPart).trim();
+    }
+
+    function buildRecipeData() {
+      const ingredients = Array.from(selectedIngredientIds).map(id => INGREDIENTS[id]);
+      const method = METHODS.find(m => m.id === selectedMethodId) || null;
+      const vessel = VESSELS.find(v => v.id === selectedVesselId) || null;
+      const sawsawan = SAWSAWAN.find(s => s.id === selectedSawsawanId) || null;
+
+      const constellation = Array.from(selectedConstellationIds).map(id => {
+        const point = CONSTELLATION_POINTS.find(p => p.id === id);
+        return point
+          ? { id: point.id, label: point.label, desc: point.desc, ingredientId: point.ingredientId }
+          : null;
+      }).filter(Boolean);
+
+      const summary = buildSummarySentence(ingredients, method, vessel, sawsawan);
+
+      return {
+        timestamp: new Date().toISOString(),
+        constellationSelections: constellation,
+        ingredients,
+        method,
+        vessel,
+        sawsawan,
+        summary
+      };
+    }
+
+    function buildRecipeTextExport(data) {
+      const lines = [];
+
+      lines.push("MY ISTORYA RECIPE");
+      lines.push("-----------------");
+      lines.push(`Timestamp: ${data.timestamp}`);
+      lines.push("");
+
+      lines.push("Constellation Points:");
+      if (data.constellationSelections.length === 0) {
+        lines.push("  (none selected)");
+      } else {
+        data.constellationSelections.forEach(p => {
+          lines.push(`  - ${p.label}: ${p.desc}`);
+        });
+      }
+      lines.push("");
+
+      lines.push("Base Ingredients:");
+      if (data.ingredients.length === 0) {
+        lines.push("  (none selected)");
+      } else {
+        data.ingredients.forEach(i => {
+          lines.push(`  - ${i.emoji} ${i.name}: ${i.meaning}`);
+        });
+      }
+      lines.push("");
+
+      lines.push("Method and Vessel:");
+      if (data.method && data.vessel) {
+        lines.push(`  Method: ${data.method.emoji} ${data.method.label} – ${data.method.desc}`);
+        lines.push(`  Vessel: ${data.vessel.emoji} ${data.vessel.label} – ${data.vessel.desc}`);
+      } else {
+        lines.push("  (method and/or vessel not selected)");
+      }
+      lines.push("");
+
+      lines.push("Sawsawan (Agency Layer):");
+      if (data.sawsawan) {
+        lines.push(`  ${data.sawsawan.emoji} ${data.sawsawan.label}: ${data.sawsawan.desc}`);
+      } else {
+        lines.push("  (no sawsawan selected)");
+      }
+      lines.push("");
+
+      lines.push("Serving Suggestion:");
+      lines.push(`  ${data.summary}`);
+
+      return lines.join("\n");
+    }
+
+    function resetAll() {
+      selectedConstellationIds.clear();
+      selectedIngredientIds.clear();
+      selectedMethodId = null;
+      selectedVesselId = null;
+      selectedSawsawanId = null;
+      document.querySelectorAll(".option-card").forEach(c => c.classList.remove("selected"));
+      document.querySelectorAll(".pill").forEach(p => p.classList.remove("selected"));
+      const status = document.getElementById("copy-status");
+      if (status) status.textContent = "";
+      setStep(1);
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function setCopyStatus(message, isError = false) {
+      const status = document.getElementById("copy-status");
+      if (!status) return;
+      status.style.color = isError ? "#fecaca" : "#bbf7d0";
+      status.textContent = message;
+      if (message) {
+        setTimeout(() => {
+          status.textContent = "";
+        }, 3000);
+      }
+    }
+
+    // Init
+    initConstellationStep();
+    initMethodVesselSawsawan();
+
+    // Navigation buttons
+    document.getElementById("next-1").addEventListener("click", () => {
+      setStep(2);
+    });
+
+    document.getElementById("reset-all-1").addEventListener("click", () => {
+      resetAll();
+    });
+
+    document.getElementById("back-2").addEventListener("click", () => {
+      setStep(1);
+    });
+
+    document.getElementById("next-2").addEventListener("click", () => {
+      setStep(3);
+    });
+
+    document.getElementById("back-3").addEventListener("click", () => {
+      setStep(2);
+    });
+
+    document.getElementById("next-3").addEventListener("click", () => {
+      setStep(4);
+    });
+
+    document.getElementById("back-4").addEventListener("click", () => {
+      setStep(3);
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      resetAll();
+    });
+
+    // Copy buttons
+    document.getElementById("copy-text").addEventListener("click", async () => {
+      const data = buildRecipeData();
+      const text = buildRecipeTextExport(data);
+      const ok = await copyToClipboard(text);
+      if (ok) {
+        setCopyStatus("Recipe text copied to clipboard.");
+      } else {
+        setCopyStatus("Unable to copy text. You can select and copy manually.", true);
+      }
+    });
+
+    document.getElementById("copy-json").addEventListener("click", async () => {
+      const data = buildRecipeData();
+      const json = JSON.stringify(data, null, 2);
+      const ok = await copyToClipboard(json);
+      if (ok) {
+        setCopyStatus("Recipe JSON copied to clipboard.");
+      } else {
+        setCopyStatus("Unable to copy JSON. You can copy from devtools console.", true);
+        console.log("Istorya Recipe JSON:", data);
+      }
+    });
+  </script>
+</body>
+</html>
