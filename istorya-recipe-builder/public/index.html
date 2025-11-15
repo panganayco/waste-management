@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build your Istorya as a recipe. Constellation points become ingredients. Sawsawan is your agency.">
+  <meta name="keywords" content="istorya, recipe builder, Filipino narrative, personal story">
+  <meta property="og:title" content="Istorya Recipe Builder">
+  <meta property="og:description" content="Build your Istorya as a recipe. Constellation points become ingredients. Sawsawan is your agency.">
+  <meta property="og:type" content="website">
+
+  <title>Istorya Recipe Builder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>What Is Your Istorya?</h1>
+      <p class="subtitle">
+        Build your Istorya as a recipe. Constellation points become ingredients. Sawsawan is your agency.
+      </p>
+    </header>
+
+    <nav class="step-indicator" role="navigation" aria-label="Recipe building steps">
+      <div class="step-pill active" data-step-pill="1" role="tab" aria-selected="true" tabindex="0">
+        <span class="number" aria-hidden="true">1</span>
+        <span>Constellation</span>
+      </div>
+      <div class="step-pill" data-step-pill="2" role="tab" aria-selected="false" tabindex="-1">
+        <span class="number" aria-hidden="true">2</span>
+        <span>Ingredients</span>
+      </div>
+      <div class="step-pill" data-step-pill="3" role="tab" aria-selected="false" tabindex="-1">
+        <span class="number" aria-hidden="true">3</span>
+        <span>Method, Vessel & Sawsawan</span>
+      </div>
+      <div class="step-pill" data-step-pill="4" role="tab" aria-selected="false" tabindex="-1">
+        <span class="number" aria-hidden="true">4</span>
+        <span>Recipe Card</span>
+      </div>
+    </nav>
+
+    <!-- STEP 1: CONSTELLATION -->
+    <section class="card" data-step="1" role="region" aria-labelledby="step1-title">
+      <div class="card-header">
+        <h2 class="card-title" id="step1-title">Step 1 – Pick your constellation points</h2>
+        <p class="card-note">These are big patterns or moments that feel familiar.</p>
+      </div>
+      <p class="hint">
+        Click all that apply. You can pick more than one. There are no wrong answers.
+      </p>
+      <div class="options-grid" id="constellation-options" role="group" aria-label="Constellation points"></div>
+      <div class="buttons-row">
+        <button class="secondary small" id="reset-all-1" aria-label="Reset all selections">Reset</button>
+        <button class="primary" id="next-1" aria-label="Continue to ingredients step">
+          Next: See your ingredients
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: INGREDIENTS -->
+    <section class="card" data-step="2" style="display:none;" role="region" aria-labelledby="step2-title">
+      <div class="card-header">
+        <h2 class="card-title" id="step2-title">Step 2 – Choose your base ingredients</h2>
+        <p class="card-note">Based on what you picked, here are your flavor anchors.</p>
+      </div>
+      <p class="hint">
+        Pick up to three ingredients that feel most true right now.
+      </p>
+      <div id="ingredient-pills" class="pill-row" role="group" aria-label="Base ingredients"></div>
+      <div class="buttons-row">
+        <button class="secondary" id="back-2" aria-label="Go back to constellation step">Back</button>
+        <button class="primary" id="next-2" aria-label="Continue to method and sawsawan">
+          Next: Method & Sawsawan
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 3: METHOD / VESSEL / SAWSAWAN -->
+    <section class="card" data-step="3" style="display:none;" role="region" aria-labelledby="step3-title">
+      <div class="card-header">
+        <h2 class="card-title" id="step3-title">Step 3 – How are you cooking with it?</h2>
+        <p class="card-note">Choose your method, vessel, and sawsawan.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <h3 class="card-title" style="font-size:0.95rem;">Method – How are you processing this now? (Pick 1)</h3>
+        <div class="options-grid" id="method-options" role="radiogroup" aria-label="Processing method"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <h3 class="card-title" style="font-size:0.95rem;">Vessel – What context are you cooking in? (Pick 1)</h3>
+        <div class="options-grid" id="vessel-options" role="radiogroup" aria-label="Cooking vessel"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" style="font-size:0.95rem;">Sawsawan – How are you choosing to adapt it? (Pick 1)</h3>
+        <p class="hint">
+          This is your agency layer. You did not choose every ingredient, but you can choose how to season your story.
+        </p>
+        <div class="options-grid" id="sawsawan-options" role="radiogroup" aria-label="Sawsawan adaptation"></div>
+      </div>
+
+      <div class="buttons-row">
+        <button class="secondary" id="back-3" aria-label="Go back to ingredients">Back</button>
+        <button class="primary" id="next-3" aria-label="See your completed recipe">
+          See my Istorya recipe
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 4: FINAL RECIPE CARD -->
+    <section class="card" data-step="4" style="display:none;" role="region" aria-labelledby="step4-title">
+      <div class="card-header">
+        <h2 class="card-title" id="step4-title">Step 4 – Your Istorya Recipe</h2>
+        <p class="card-note">This is a snapshot, not a permanent label. Recipes evolve.</p>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-card-inner" id="recipe-output" aria-live="polite">
+          <!-- Generated content goes here -->
+        </div>
+      </div>
+
+      <div class="buttons-row">
+        <button class="secondary small" id="copy-text" aria-label="Copy recipe as text">Copy recipe text</button>
+        <button class="secondary small" id="copy-json" aria-label="Copy recipe as JSON">Copy recipe JSON</button>
+        <button class="secondary small" id="save-recipe" aria-label="Save recipe to server">Save Recipe</button>
+        <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
+      </div>
+
+      <p class="tagline">
+        Keep this as a reminder that your so-called wrong turns were ingredients. Your sawsawan is how you claim them.
+      </p>
+
+      <div class="buttons-row">
+        <button class="secondary" id="back-4" aria-label="Go back to edit selections">Back</button>
+        <button class="primary" id="restart" aria-label="Start creating a new recipe">
+          Start a new recipe
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display:none;" role="alert" aria-busy="true">
+      <div class="spinner"></div>
+      <p>Saving your recipe...</p>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
